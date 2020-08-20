@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-
 @Controller
 @RequestMapping(value = "/position")
 @RequiredArgsConstructor
@@ -26,9 +24,7 @@ public class PositionController {
     @GetMapping
     public String getPositions(@AuthenticationPrincipal User user,
                                Model model) {
-        List<Position> positions = positionService.findAll();
-
-        model.addAttribute("positions", positions);
+        model.addAttribute("positions", positionService.findAll());
         return "positions";
     }
 
@@ -41,10 +37,8 @@ public class PositionController {
 
         positionService.save(position);
 
-        List<Position> positions = positionService.findAll();
-
         model.addAttribute("user", user);
-        model.addAttribute("positions", positions);
+        model.addAttribute("positions", positionService.findAll());
 
         return "positions";
     }

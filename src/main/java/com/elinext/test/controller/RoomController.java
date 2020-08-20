@@ -10,8 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @CrossOrigin
 @RequestMapping(value = "/room")
@@ -23,9 +21,7 @@ public class RoomController {
     @GetMapping
     public String getRooms(@AuthenticationPrincipal User user,
                            Model model) {
-        List<Room> rooms = roomService.findAll();
-
-        model.addAttribute("rooms", rooms);
+        model.addAttribute("rooms", roomService.findAll());
         return "room";
     }
 
@@ -41,10 +37,8 @@ public class RoomController {
 
         roomService.save(room);
 
-        List<Room> rooms = roomService.findAll();
-
         model.addAttribute("user", user);
-        model.addAttribute("rooms", rooms);
+        model.addAttribute("rooms", roomService.findAll());
 
         return "room";
     }

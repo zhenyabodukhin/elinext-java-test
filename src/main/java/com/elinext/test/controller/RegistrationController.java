@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/registration")
 @RequiredArgsConstructor
@@ -31,9 +29,7 @@ public class RegistrationController {
 
     @GetMapping
     public String registration(Model model) {
-        List<String> positions = positionService.findAllPositionsQuery();
-
-        model.addAttribute("positions", positions);
+        model.addAttribute("positions", positionService.findAllPositionsQuery());
         return "registration";
     }
 

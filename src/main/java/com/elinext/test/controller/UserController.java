@@ -1,6 +1,5 @@
 package com.elinext.test.controller;
 
-import com.elinext.test.domain.Reservation;
 import com.elinext.test.domain.User;
 import com.elinext.test.service.impl.ReservationServiceImpl;
 import com.elinext.test.service.impl.UserServiceImpl;
@@ -11,8 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -27,13 +24,8 @@ public class UserController {
 
     @GetMapping("/profile")
     public String getProfile(Model model, @AuthenticationPrincipal User user){
-
-        List<Reservation> reservations = reservationService.findByUserId(user.getId());
-
-        model.addAttribute("reservations", reservations);
+        model.addAttribute("reservations", reservationService.findByUserId(user.getId()));
 
         return "profile";
     }
-
-
 }

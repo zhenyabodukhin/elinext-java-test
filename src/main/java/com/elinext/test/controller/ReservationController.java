@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Time;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Timer;
 
 @Controller
@@ -32,12 +31,9 @@ public class ReservationController {
     @ResponseStatus(HttpStatus.OK)
     public String getReservations(@AuthenticationPrincipal User user,
                                   Model model) {
-        List<Reservation> reservations = reservationService.findAll();
-        List<String> rooms = roomService.findAllNamesQuery();
-
         model.addAttribute("user", user);
-        model.addAttribute("reservations", reservations);
-        model.addAttribute("rooms", rooms);
+        model.addAttribute("reservations", reservationService.findAll());
+        model.addAttribute("rooms", roomService.findAllNamesQuery());
 
         return "reservation";
     }
@@ -55,6 +51,7 @@ public class ReservationController {
 
         Time start = Time.valueOf(startTime + ":00");
         Time end = Time.valueOf(endTime + ":00");
+        Time now = Time.valueOf(LocalTime.now());
 
         reservation.setRoomId(roomService.findByName(roomName).getId());
         reservation.setUserId(user.getId());
@@ -65,20 +62,15 @@ public class ReservationController {
 
         Reservation createdReservation = reservationService.save(reservation);
 
-        Time now = Time.valueOf(LocalTime.now());
         long delay = end.getTime() - now.getTime();
         Timer timer = new Timer();
         Task task = new Task(reservationService);
         task.setId(createdReservation.getId());
         timer.schedule(task, delay);
 
-
-        List<Reservation> reservations = reservationService.findAll();
-        List<String> rooms = roomService.findAllNamesQuery();
-
         model.addAttribute("user", user);
-        model.addAttribute("reservations", reservations);
-        model.addAttribute("rooms", rooms);
+        model.addAttribute("reservations", reservationService.findAll());
+        model.addAttribute("rooms", roomService.findAllNamesQuery());
 
         return "reservation";
     }
@@ -89,9 +81,7 @@ public class ReservationController {
                                     Model model) {
         reservationService.delete(id);
 
-        List<Reservation> reservations = reservationService.findByUserId(user.getId());
-
-        model.addAttribute("reservations", reservations);
+        model.addAttribute("reservations", reservationService.findByUserId(user.getId()));
         model.addAttribute("user", user);
 
         return "redirect:/user/profile";
