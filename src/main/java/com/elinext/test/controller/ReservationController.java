@@ -2,6 +2,7 @@ package com.elinext.test.controller;
 
 import com.elinext.test.domain.Reservation;
 import com.elinext.test.domain.User;
+import com.elinext.test.schedule.Task;
 import com.elinext.test.service.impl.ReservationServiceImpl;
 import com.elinext.test.service.impl.RoomServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Timer;
 
 @Controller
 @RequestMapping(value = "/reservation")
@@ -50,17 +53,25 @@ public class ReservationController {
                                   Model model) {
         Reservation reservation = new Reservation();
 
-        String start = startTime + ":00";
-        String end = endTime + ":00";
+        Time start = Time.valueOf(startTime + ":00");
+        Time end = Time.valueOf(endTime + ":00");
 
         reservation.setRoomId(roomService.findByName(roomName).getId());
         reservation.setUserId(user.getId());
         reservation.setOperation(operation);
         reservation.setOperationDescription(operationDescription);
-        reservation.setStartTime(Time.valueOf(start));
-        reservation.setEndTime(Time.valueOf(end));
+        reservation.setStartTime(start);
+        reservation.setEndTime(end);
 
-        reservationService.save(reservation);
+        Reservation createdReservation = reservationService.save(reservation);
+
+        Time now = Time.valueOf(LocalTime.now());
+        long delay = end.getTime() - now.getTime();
+        Timer timer = new Timer();
+        Task task = new Task(reservationService);
+        task.setId(createdReservation.getId());
+        timer.schedule(task, delay);
+
 
         List<Reservation> reservations = reservationService.findAll();
         List<String> rooms = roomService.findAllNamesQuery();
