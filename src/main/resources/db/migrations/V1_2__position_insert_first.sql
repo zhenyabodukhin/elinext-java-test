@@ -1,0 +1,1 @@
+INSERT INTO m_positions (id, name) VALUES (1, 'Врач');
