@@ -11,6 +11,9 @@ spring:
     url: "jdbc:postgresql://localhost:5432/elinext"
     user: postgres
     password: root
+  freemarker:
+    expose-request-attributes: true
+    suffix: .ftl
 datasource:
   driverName: org.postgresql.Driver
   url: "jdbc:postgresql://localhost:5432/elinext"

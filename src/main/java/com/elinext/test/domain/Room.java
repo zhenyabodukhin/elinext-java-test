@@ -1,11 +1,12 @@
 package com.elinext.test.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "m_rooms")
@@ -24,7 +25,10 @@ public class Room {
     @Column(name = "type")
     private String type;
 
-    @JsonManagedReference
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "roomReservation")
-    private Set<Reservation> roomReservations = Collections.emptySet();
+    @Column(name = "name")
+    private String name;
+
+    @OneToMany(mappedBy = "roomReservation")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Reservation> roomReservations = Collections.emptyList();
 }

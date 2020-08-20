@@ -1,7 +1,7 @@
 package com.elinext.test.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @EqualsAndHashCode(exclude = {"id", "userRole"})
 @ToString(exclude = {"userRole"})
-public class Role {
+public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +25,12 @@ public class Role {
     @Column(name = "role")
     private String roleName;
 
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User userRole;
+
+    @Override
+    public String getAuthority() {
+        return roleName;
+    }
 }

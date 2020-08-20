@@ -1,6 +1,5 @@
 package com.elinext.test.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,12 +37,10 @@ public class Reservation {
     @Column(name = "end_time")
     private Time endTime;
 
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User userReservation;
 
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "room_id", insertable = false, updatable = false)
     private Room roomReservation;

@@ -1,12 +1,15 @@
 package com.elinext.test.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "m_users")
@@ -16,14 +19,14 @@ import java.util.Set;
 @Getter
 @EqualsAndHashCode(exclude = {"id", "roles", "userReservations", "userPosition"})
 @ToString(exclude = {"roles", "userReservations", "userPosition"})
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "login")
-    private String login;
+    private String username;
 
     @Column(name = "password")
     private String password;
@@ -31,16 +34,48 @@ public class User {
     @Column(name = "position_id")
     private Long positionId;
 
-    @JsonManagedReference
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "userRole")
-    private Set<Role> roles = Collections.emptySet();
+    @OneToMany(mappedBy = "userRole")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Role> roles = Collections.emptyList();
 
-    @JsonManagedReference
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "userReservation")
-    private Set<Reservation> userReservations = Collections.emptySet();
+    @OneToMany(mappedBy = "userReservation")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Reservation> userReservations = Collections.emptyList();
 
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "position_id", insertable = false, updatable = false)
     private Position userPosition;
+
+    public boolean isAdmin() {
+        return roles.contains("ROLE_ADMIN");
+    }
+
+    public boolean isUser() {
+        return roles.contains("ROLE_USER");
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

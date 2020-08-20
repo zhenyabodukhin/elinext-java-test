@@ -2,38 +2,50 @@ package com.elinext.test.controller;
 
 import com.elinext.test.domain.Room;
 import com.elinext.test.domain.User;
-import com.elinext.test.request.RoomRequest;
 import com.elinext.test.service.impl.RoomServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
-@RestController
+@Controller
 @CrossOrigin
-@RequestMapping(value = "/rest/room")
+@RequestMapping(value = "/room")
 @RequiredArgsConstructor
 public class RoomController {
 
     private final RoomServiceImpl roomService;
 
-    @GetMapping("/all")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<Room>> getRooms() {
-        return new ResponseEntity<>(roomService.findAll(), HttpStatus.OK);
+    @GetMapping
+    public String getRooms(@AuthenticationPrincipal User user,
+                           Model model) {
+        List<Room> rooms = roomService.findAll();
+
+        model.addAttribute("rooms", rooms);
+        return "room";
     }
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Room> createRoom(@RequestBody @Valid RoomRequest request) {
+    public String createRoom(@AuthenticationPrincipal User user,
+                             @RequestParam String roomName,
+                             @RequestParam String roomType,
+                             Model model) {
         Room room = new Room();
+        room.setName(roomName);
+        room.setType(roomType);
 
-        room.setType(request.getType());
+        roomService.save(room);
 
-        return new ResponseEntity<>(roomService.save(room), HttpStatus.CREATED);
+        List<Room> rooms = roomService.findAll();
+
+        model.addAttribute("user", user);
+        model.addAttribute("rooms", rooms);
+
+        return "room";
     }
 }

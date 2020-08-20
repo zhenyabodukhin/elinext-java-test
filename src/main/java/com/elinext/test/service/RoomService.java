@@ -15,4 +15,8 @@ public interface RoomService {
     void delete (Long id);
 
     Room findById(Long id);
+
+    List<String> findAllNamesQuery();
+
+    Room findByName(String name);
 }

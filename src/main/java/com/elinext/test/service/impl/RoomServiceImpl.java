@@ -53,4 +53,14 @@ public class RoomServiceImpl implements RoomService {
             throw new EntityNotFoundException(Room.class, id);
         }
     }
+
+    @Override
+    public List<String> findAllNamesQuery() {
+        return roomRepository.findAllNamesQuery();
+    }
+
+    @Override
+    public Room findByName(String name) {
+        return roomRepository.findByName(name);
+    }
 }

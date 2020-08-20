@@ -1,65 +1,39 @@
 package com.elinext.test.controller;
 
+import com.elinext.test.domain.Reservation;
 import com.elinext.test.domain.User;
-import com.elinext.test.request.UserRequest;
+import com.elinext.test.service.impl.ReservationServiceImpl;
 import com.elinext.test.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.validation.Valid;
 import java.util.List;
 
-@RestController
-@CrossOrigin
-@RequestMapping(value = "/rest/user")
+@Controller
+@RequestMapping(value = "/user")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserServiceImpl userService;
 
+    private final ReservationServiceImpl reservationService;
+
     private final PasswordEncoder passwordEncoder;
 
-    @GetMapping("/all")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<User>> getUsers() {
-        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+    @GetMapping("/profile")
+    public String getProfile(Model model, @AuthenticationPrincipal User user){
+
+        List<Reservation> reservations = reservationService.findByUserId(user.getId());
+
+        model.addAttribute("reservations", reservations);
+
+        return "profile";
     }
 
 
-    @PutMapping(value = "/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long userId,
-                                           @RequestBody @Valid UserRequest request) {
-        User user = userService.findById(userId);
-
-        user.setLogin(request.getLogin());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setPositionId(request.getPositionId());
-
-        return new ResponseEntity<>(userService.update(user), HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Long> deleteUser(@PathVariable("id") Long userId) {
-
-        userService.delete(userId);
-
-        return new ResponseEntity<>(userId, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) {
-        return new ResponseEntity<>(userService.findById(userId), HttpStatus.OK);
-    }
-
-    @GetMapping("/search/name")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<User> getUserByName(String name) {
-        return new ResponseEntity<>(userService.findByName(name), HttpStatus.OK);
-    }
 }

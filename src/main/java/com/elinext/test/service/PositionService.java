@@ -17,4 +17,6 @@ public interface PositionService {
   Position findById(Long id);
 
   Position findByName(String name);
+
+  List<String> findAllPositionsQuery();
 }

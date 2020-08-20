@@ -1,11 +1,12 @@
 package com.elinext.test.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "m_positions")
@@ -24,7 +25,7 @@ public class Position {
     @Column(name = "name")
     private String positionName;
 
-    @JsonManagedReference
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "userPosition")
-    private Set<User> positionUsers = Collections.emptySet();
+    @OneToMany(mappedBy = "userPosition")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<User> positionUsers = Collections.emptyList();
 }

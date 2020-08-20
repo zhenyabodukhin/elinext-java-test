@@ -1,39 +1,20 @@
 package com.elinext.test.service.impl;
 
-import com.elinext.test.domain.Role;
-import com.elinext.test.domain.User;
-import com.elinext.test.service.UserService;
+import com.elinext.test.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.stream.Collectors;
-
-@Service(value = "userDetailsService")
+@Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        try {
-            User user = userService.findByName(userName);
-            if (user.getId() == null) {
-                throw new UsernameNotFoundException(String.format("User '%s' not found", userName));
-            } else {
-                return new org.springframework.security.core.userdetails.User(
-                        user.getLogin(),
-                        user.getPassword(),
-                        AuthorityUtils.commaSeparatedStringToAuthorityList(user.getRoles()
-                                .stream().map(Role::getRoleName).collect(Collectors.joining(", ")))
-                );
-            }
-        } catch (Exception e) {
-            throw new UsernameNotFoundException("User with this name not found");
-        }
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username);
     }
 }
