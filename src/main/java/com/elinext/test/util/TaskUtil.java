@@ -1,4 +1,4 @@
-package com.elinext.test.schedule;
+package com.elinext.test.util;
 
 import com.elinext.test.exception.EntityNotFoundException;
 import com.elinext.test.service.impl.ReservationServiceImpl;
@@ -11,7 +11,7 @@ import java.util.TimerTask;
 @Component
 @Data
 @RequiredArgsConstructor
-public class Task extends TimerTask {
+public class TaskUtil extends TimerTask {
 
     private final ReservationServiceImpl reservationService;
 

@@ -38,9 +38,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/registration",
                         "/main",
                         "/user/profile/",
-                        "/position/**",
+                        "/position",
                         "/reservation",
-                        "/room/**").permitAll()
+                        "/room").permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login")

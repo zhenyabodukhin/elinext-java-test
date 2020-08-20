@@ -5,6 +5,7 @@ import com.elinext.test.domain.User;
 import com.elinext.test.service.impl.RoomServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ public class RoomController {
 
     private final RoomServiceImpl roomService;
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping
     public String getRooms(@AuthenticationPrincipal User user,
                            Model model) {

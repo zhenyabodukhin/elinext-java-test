@@ -49,10 +49,6 @@
                             </#list>
                         </select>
                     </div>
-                    <#--                    <div class="col-md-5 mb-3">-->
-                    <#--                        <label for="inputUser">User</label>-->
-                    <#--                        <input type="text" class="form-control form-control-sm" id="inputUser" name="name" readonly>-->
-                    <#--                    </div>-->
                     <div class="col-md-4 mb-3">
                         <label for="inputOperation">Operation</label>
                         <input type="text" class="form-control form-control-sm" id="inputOperation" name="operation"
@@ -67,9 +63,9 @@
                 </div>
                 <div class="form-row ml-1 mb-3">
                     <div id="datetimepicker4" class="datepicker-to-from">
-                        <input type="time" id="startTimestamp" name="startTime" class="date-picker">
+                        <input type="time" id="startTimestamp" name="startTime" class="date-picker" required>
 
-                        <input type="time" id="endTimestamp" name="endTime" class="date-picker">
+                        <input type="time" id="endTimestamp" name="endTime" class="date-picker" required>
                     </div>
                 </div>
 

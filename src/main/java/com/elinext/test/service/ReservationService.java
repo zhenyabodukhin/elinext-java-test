@@ -19,4 +19,8 @@ public interface ReservationService {
     List<Reservation> findByRoomId(Long id);
 
     List<Reservation> findByUserId(Long id);
+
+    List<Reservation> findSortedByUserId(Long id);
+
+    List<Reservation> findSortedByRoomId(Long id);
 }
